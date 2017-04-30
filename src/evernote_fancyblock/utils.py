@@ -25,11 +25,11 @@ def encrypt(text, key=ENC_KEY):
     if isinstance(text, str):
         text = text.encode()
     assert isinstance(text, bytes)
-    return base64.b64encode(bytes(c^key for c in text))
+    return base64.b64encode(bytes(c^key for c in text)).decode('ascii')
 
 
 def decrypt(text, key=ENC_KEY):
     if isinstance(text, str):
         text = text.encode()
     assert isinstance(text, bytes)
-    return bytes(c^key for c in base64.b64decode(text))
+    return bytes(c^key for c in base64.b64decode(text)).encode('ascii')
