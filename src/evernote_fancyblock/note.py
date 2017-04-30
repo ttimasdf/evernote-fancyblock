@@ -11,8 +11,9 @@ def codeblock_detect(soup):
     return (orig_blocks, fancy_blocks, modified_blocks)
 
 
-def make_soup(input):
-    return BeautifulSoup(input, 'xml')
+def make_soup(note):
+    text = note.content
+    return BeautifulSoup(text, 'xml')
 
 
 def prompt_notes(client):
@@ -38,5 +39,5 @@ def prompt_notes(client):
     nt_selection = utils.set_from_range(input("Select notes[1-{}]:".format(len(notes))))
     assert nt_selection.issubset(range(1, len(notes)+1)), "Note selection out of range"
 
-    return [noteStore.getNote(notes[i-1].guid, True, False, False, False) for i in nt_selection]
+    return (noteStore.getNote(notes[i-1].guid, True, False, False, False) for i in nt_selection)
 
