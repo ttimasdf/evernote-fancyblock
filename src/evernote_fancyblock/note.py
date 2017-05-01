@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 from . import utils
-from evernote.api.client import EvernoteClient, NoteStore
+from evernote.api.client import NoteStore
 
 
 def codeblock_detect(soup):
@@ -16,7 +16,7 @@ def make_soup(note):
     return BeautifulSoup(text, 'xml')
 
 
-def prompt_notes(client):
+def prompt_notes(client, lazy_query=False):
     print("Fetching notebooks...\n")
     noteStore = client.get_note_store()
     notebooks = noteStore.listNotebooks()
@@ -39,5 +39,6 @@ def prompt_notes(client):
     nt_selection = utils.set_from_range(input("Select notes[1-{}]:".format(len(notes))))
     assert nt_selection.issubset(range(1, len(notes)+1)), "Note selection out of range"
 
-    return (noteStore.getNote(notes[i-1].guid, True, False, False, False) for i in nt_selection)
+    ret = (noteStore.getNote(notes[i-1].guid, True, False, False, False) for i in nt_selection)
+    return ret if lazy_query else list(ret)
 
