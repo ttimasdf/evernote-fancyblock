@@ -12,7 +12,7 @@ def codeblock_detect(soup):
 
 
 def make_soup(note):
-    text = note.content
+    text = note.content.encode()
     return BeautifulSoup(text, 'xml')
 
 
