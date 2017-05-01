@@ -1,14 +1,14 @@
 from bs4 import BeautifulSoup
 from . import utils
 from evernote.api.client import NoteStore
-
+import evernote.edam.type.ttypes as Types
 
 def codeblock_detect(soup):
-    orig_blocks = soup("pre")
-    fancy_blocks = soup("div", style=lambda s: isinstance(s, str) and "-en-codeblock" in s)
-    modified_blocks = soup("div", style=lambda s: isinstance(s, str) and "-en-fancyblock" in s)
+    tag_blocks = soup("pre")
+    orig_blocks = soup("div", style=lambda s: isinstance(s, str) and "-en-codeblock" in s)
+    fancy_blocks = soup("div", style=lambda s: isinstance(s, str) and "-en-fancyblock" in s)
 
-    return (orig_blocks, fancy_blocks, modified_blocks)
+    return (tag_blocks, orig_blocks, fancy_blocks)
 
 
 def make_soup(note):
@@ -42,3 +42,21 @@ def prompt_notes(client, lazy_query=False):
     ret = (noteStore.getNote(notes[i-1].guid, True, False, False, False) for i in nt_selection)
     return ret if lazy_query else list(ret)
 
+
+def xml_validate(soup):
+    from urllib.request import urlopen
+    from lxml import etree
+
+    text = str(soup)
+    if input("Validation may take a while downloading DTD file, continue? [y/N]") is 'y':
+        return True
+    with urlopen('http://xml.evernote.com/pub/enml2.dtd') as u:
+        dtd = etree.DTD(u)
+    t = etree.fromstring(text)
+    try:
+        dtd.assertValid(t)
+    except etree.DocumentInvalid as e:
+        print("DocumentInvalid:", e)
+        return False
+    else:
+        return True
