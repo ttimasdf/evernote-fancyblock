@@ -14,12 +14,15 @@ def get_token():
     with config_file.open() as f:
         parser.read_file(f)
 
-    if parser.has_section('secret'):
+    if parser.has_option('secret', 'token'):
         app_token = decrypt(parser.get('secret', 'token'))
     else:
         app_token = input("Enter your developer token: ")
-        parser.add_section('secret')
+        if not parser.has_section('secret'):
+            parser.add_section('secret')
         parser.set('secret', 'token', encrypt(app_token))
+        with config_file.open('w') as f:
+            parser.write(f)
 
     return app_token
 

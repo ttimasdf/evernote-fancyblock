@@ -47,7 +47,7 @@ def xml_validate(soup):
     from urllib.request import urlopen
     from lxml import etree
 
-    text = str(soup)
+    text = str(soup).encode()
     if input("Validation may take a while downloading DTD file, continue? [y/N]") in 'Nn':
         return True
     with urlopen('http://xml.evernote.com/pub/enml2.dtd') as u:
