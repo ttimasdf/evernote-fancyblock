@@ -9,5 +9,6 @@ def main(*args):
     notes = note.prompt_notes(client)
 
     for n in notes:
+        print("Processing", n.title)
         soup = note.make_soup(n)
-        tag_blocks, orig_blocks, fancy_blocks = note.codeblock_detect(soup)
+        tag_blocks, classic_blocks, fancy_blocks = note.codeblock_detect(soup)

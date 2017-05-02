@@ -2,18 +2,27 @@ from bs4 import BeautifulSoup
 from . import utils
 from evernote.api.client import NoteStore
 import evernote.edam.type.ttypes as Types
+import json
+
+
+STYLE_CLASSIC_BLOCK = 'box-sizing: border-box; padding: 8px; font-family: Monaco, Menlo, Consolas, "Courier New", monospace; font-size: 12px; color: rgb(51, 51, 51); border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-right-radius: 4px; border-bottom-left-radius: 4px; background-color: rgb(251, 250, 248); border: 1px solid rgba(0, 0, 0, 0.14902); background-position: initial initial; background-repeat: initial initial;-en-codeblock:true;'
+BACKUP_TAG = 'strike'
 
 def codeblock_detect(soup):
     tag_blocks = soup("pre")
-    orig_blocks = soup("div", style=lambda s: isinstance(s, str) and "-en-codeblock" in s)
+    classic_blocks = soup("div", style=lambda s: isinstance(s, str) and "-en-codeblock" in s)
     fancy_blocks = soup("div", style=lambda s: isinstance(s, str) and "-en-fancyblock" in s)
 
-    return (tag_blocks, orig_blocks, fancy_blocks)
+    return (tag_blocks, classic_blocks, fancy_blocks)
 
 
 def make_soup(note):
     text = note.content.encode()
     return BeautifulSoup(text, 'xml')
+
+
+def make_tag(string):
+    return BeautifulSoup(string, 'xml').contents[0].extract()
 
 
 def prompt_notes(client, lazy_query=False):
@@ -60,3 +69,55 @@ def xml_validate(soup):
         return False
     else:
         return True
+
+
+def tag2classic(tag, soup):
+    if tag.string is None:
+        print("False positive:", str(tag))
+        return tag
+
+    new = soup.new_tag('div')
+    new['style'] = STYLE_CLASSIC_BLOCK
+    for s in tag.string.split('\n'):
+        p = soup.new_tag('div')
+        p.string = s
+        new.append(s)
+
+    backup_replace_tag(tag, new, soup)
+    return new
+
+
+def backup_replace_tag(orig, new, soup):
+    bk_sec = orig.find(BACKUP_TAG)
+    if bk_sec is None:
+        bk_sec = soup.new_tag(BACKUP_TAG)
+    else:
+        bk_sec.extract()
+
+    try:
+        payload = json.loads(bk_sec['title'])
+    except (KeyError, json.JSONDecodeError) as e:
+        print("Backup not found", e)
+        payload = {}
+
+    if payload.get('orig') is None:
+        payload['orig'] = str(orig)
+    payload['last'] = str(orig)
+
+    bk_sec['title'] = json.dumps(payload)
+    new.insert(0, bk_sec)
+    orig.replace_with(new)
+
+    return new
+
+
+def restore_tag(tag, soup):
+    bk_sec = tag.find(BACKUP_TAG)
+    try:
+        payload = json.loads(bk_sec['title'])
+    except (TypeError, KeyError, json.JSONDecodeError) as e:
+        print("Backup not found", e)
+        return
+    new = make_tag(payload['orig'])
+    tag.replace_with(new)
+    return new
