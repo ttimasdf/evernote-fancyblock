@@ -3,8 +3,8 @@ from evernote.api.client import EvernoteClient
 
 
 def main(*args):
-    app_token = utils.get_token()
-    client = EvernoteClient(token=app_token)
+    app_token, service_host = utils.get_token()
+    client = EvernoteClient(token=app_token, service_host=service_host)
 
     notes = note.prompt_notes(client)
 
