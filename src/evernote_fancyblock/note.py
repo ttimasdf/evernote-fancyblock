@@ -81,7 +81,9 @@ def tag2classic(tag, soup):
     for s in tag.string.split('\n'):
         p = soup.new_tag('div')
         p.string = s
-        new.append(s)
+        if p.string.strip() is '':
+            p.append(soup.new_tag('br'))
+        new.append(p)
 
     backup_replace_tag(tag, new, soup)
     return new
@@ -121,3 +123,4 @@ def restore_tag(tag, soup):
     new = make_tag(payload['orig'])
     tag.replace_with(new)
     return new
+
