@@ -81,7 +81,7 @@ def tag2classic(tag, soup):
     for s in tag.string.split('\n'):
         p = soup.new_tag('div')
         p.string = s
-        if p.string.strip() is '':
+        if p.string.strip() == '':
             p.append(soup.new_tag('br'))
         new.append(p)
 
