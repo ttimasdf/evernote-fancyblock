@@ -72,43 +72,47 @@ def xml_validate(soup):
 
 
 def tag2classic(tag, soup):
-    if tag.string is None:
-        print("False positive:", str(tag))
-        return tag
+    tag_root = tag
+    tag_str = str(tag)
+    while any((tag.tt, tag.code, tag.pre)):
+        tag = tag.tt or tag.code or tag.pre
 
     new = soup.new_tag('div')
     new['style'] = STYLE_CLASSIC_BLOCK
-    for s in tag.string.split('\n'):
-        p = soup.new_tag('div')
-        p.string = s
-        if p.string.strip() == '':
-            p.append(soup.new_tag('br'))
-        new.append(p)
 
-    backup_replace_tag(tag, new, soup)
-    return new
+    p = soup.new_tag('div')
+    for c in list(tag.children):
+        if isinstance(c, type(tag)):
+            p.append(c)
+        else:
+            for l in c.string.split('\n'):
+                p.append(l)
+                new.append(p)
+                p = soup.new_tag('div')
+            p.decompose()
+            p = new.contents[-1]
+
+    tag_root.replace_with(new)
+    tag_root.decompose()
+    return backup_tag(new, tag_str, soup)
 
 
-def backup_replace_tag(orig, new, soup):
-    bk_sec = orig.find(BACKUP_TAG)
+def backup_tag(new, orig_str, soup):
+    bk_sec = new.find(BACKUP_TAG)
     if bk_sec is None:
         bk_sec = soup.new_tag(BACKUP_TAG)
-    else:
-        bk_sec.extract()
+        new.insert(0, bk_sec)
 
     try:
         payload = json.loads(bk_sec['title'])
     except (KeyError, json.JSONDecodeError) as e:
-        print("Backup not found", e)
         payload = {}
 
     if payload.get('orig') is None:
-        payload['orig'] = str(orig)
-    payload['last'] = str(orig)
+        payload['orig'] = orig_str
+    payload['last'] = orig_str
 
     bk_sec['title'] = json.dumps(payload)
-    new.insert(0, bk_sec)
-    orig.replace_with(new)
 
     return new
 
