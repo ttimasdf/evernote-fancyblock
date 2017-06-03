@@ -83,7 +83,7 @@ def tag2classic(tag, soup):
     p = soup.new_tag('div')
     for c in list(tag.children):
         if isinstance(c, type(tag)):
-            p.append(c)
+            p.append(make_tag(str(c).replace('\n', '<br/>')))
         else:
             for l in c.string.split('\n'):
                 p.append(l)
