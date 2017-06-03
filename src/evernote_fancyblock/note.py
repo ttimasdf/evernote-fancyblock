@@ -10,7 +10,7 @@ BACKUP_TAG = 'strike'
 
 def codeblock_detect(soup):
     tag_blocks = soup("pre")
-    classic_blocks = soup("div", style=lambda s: isinstance(s, str) and "-en-codeblock" in s)
+    classic_blocks = soup(["div", "pre"], style=lambda s: isinstance(s, str) and "-en-codeblock" in s)
     fancy_blocks = soup("div", style=lambda s: isinstance(s, str) and "-en-fancyblock" in s)
 
     return (tag_blocks, classic_blocks, fancy_blocks)
@@ -77,24 +77,11 @@ def tag2classic(tag, soup):
     while any((tag.tt, tag.code, tag.pre)):
         tag = tag.tt or tag.code or tag.pre
 
-    new = soup.new_tag('div')
-    new['style'] = STYLE_CLASSIC_BLOCK
+    tag.name = 'pre'
+    tag['style'] = STYLE_CLASSIC_BLOCK
 
-    p = soup.new_tag('div')
-    for c in list(tag.children):
-        if isinstance(c, type(tag)):
-            p.append(make_tag(str(c).replace('\n', '<br/>')))
-        else:
-            for l in c.string.split('\n'):
-                p.append(l)
-                new.append(p)
-                p = soup.new_tag('div')
-            p.decompose()
-            p = new.contents[-1]
-
-    tag_root.replace_with(new)
-    tag_root.decompose()
-    return backup_tag(new, tag_str, soup)
+    tag_root.replace_with(tag)
+    return backup_tag(tag, tag_str, soup)
 
 
 def backup_tag(new, orig_str, soup):
