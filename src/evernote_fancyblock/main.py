@@ -2,6 +2,7 @@ from . import utils, note
 from evernote.api.client import EvernoteClient
 from time import time
 
+
 def main():
     app_token, service_host = utils.get_token()
     client = EvernoteClient(token=app_token, service_host=service_host)
@@ -28,4 +29,3 @@ def main():
         n.content = str(soup)
         # n.updated = int(time()*1000)
         store.updateNote(n)
-

@@ -8,10 +8,13 @@ import json
 STYLE_CLASSIC_BLOCK = 'box-sizing: border-box; padding: 8px; font-family: Monaco, Menlo, Consolas, "Courier New", monospace; font-size: 12px; color: rgb(51, 51, 51); border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-right-radius: 4px; border-bottom-left-radius: 4px; background-color: rgb(251, 250, 248); border: 1px solid rgba(0, 0, 0, 0.14902); background-position: initial initial; background-repeat: initial initial;-en-codeblock:true;'
 BACKUP_TAG = 'strike'
 
+
 def codeblock_detect(soup):
     tag_blocks = soup("pre")
-    classic_blocks = soup(["div", "pre"], style=lambda s: isinstance(s, str) and "-en-codeblock" in s)
-    fancy_blocks = soup("div", style=lambda s: isinstance(s, str) and "-en-fancyblock" in s)
+    classic_blocks = soup(["div", "pre"], style=lambda s: isinstance(
+        s, str) and "-en-codeblock" in s)
+    fancy_blocks = soup("div", style=lambda s: isinstance(
+        s, str) and "-en-fancyblock" in s)
 
     return (tag_blocks, classic_blocks, fancy_blocks)
 
@@ -30,11 +33,12 @@ def prompt_notes(client, lazy_query=False):
     noteStore = client.get_note_store()
     notebooks = noteStore.listNotebooks()
     for i in range(len(notebooks)):
-        print("[{num}] {name}".format(num=i+1, name=notebooks[i].name))
+        print("[{num}] {name}".format(num=i + 1, name=notebooks[i].name))
 
     nb_selection = int(input("Select notebooks[1-{}]:".format(len(notebooks))))
-    assert nb_selection in range(1, len(notebooks)+1), "Notebook selection out of range"
-    nb = notebooks[nb_selection-1]
+    assert nb_selection in range(
+        1, len(notebooks) + 1), "Notebook selection out of range"
+    nb = notebooks[nb_selection - 1]
 
     note_filter = NoteStore.NoteFilter()
     note_filter.notebookGuid = nb.guid
@@ -43,12 +47,15 @@ def prompt_notes(client, lazy_query=False):
     note_metas = noteStore.findNotesMetadata(note_filter, 0, 100, spec)
     notes = note_metas.notes
     for i in range(len(notes)):
-        print("[{num}] {name}".format(num=i+1, name=notes[i].title))
+        print("[{num}] {name}".format(num=i + 1, name=notes[i].title))
 
-    nt_selection = utils.set_from_range(input("Select notes[1-{}]:".format(len(notes))))
-    assert nt_selection.issubset(range(1, len(notes)+1)), "Note selection out of range"
+    nt_selection = utils.set_from_range(
+        input("Select notes[1-{}]:".format(len(notes))))
+    assert nt_selection.issubset(
+        range(1, len(notes) + 1)), "Note selection out of range"
 
-    ret = (noteStore.getNote(notes[i-1].guid, True, False, False, False) for i in nt_selection)
+    ret = (noteStore.getNote(notes[i - 1].guid, True,
+                             False, False, False) for i in nt_selection)
     return ret if lazy_query else list(ret)
 
 
@@ -114,4 +121,3 @@ def restore_tag(tag, soup):
     new = make_tag(payload['orig'])
     tag.replace_with(new)
     return new
-
