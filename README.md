@@ -1,8 +1,29 @@
 # evernote-fancyblock
-Prettify codeblocks in Evernote notes, including pages from web clipper.
-
+Prettify codeblocks in Evernote notes, especially pages from web clipper.
 
 # Usage
+## Get Developer Token
+Simply run `./run.py`. For the first time, it will prompt you of your developer token. simply enter it and it'll be encrypted and stored in `config.ini` locally. If you want to use this program in production (Use a real account other than a faked one in sandbox.evernote.com), add a config named `service_host` in the ini file as following:
+```
+[secret]
+token = [encrypted token]
+service_host = www.evernote.com
+# For 印象笔记 users uncomment this line instead
+# service_host = app.yinxiang.com
+```
+
+I made this process complicated just to warn you that this program although tested to work in my case but is not against all, including any special/corrupted/complicated notes. If this program corrupted your note, just *USE THE `-r` FLAG* below to **restore internal backups**! This is proved to be safe.
+
+## Swap between block styles
+Use `-t` `-c` or `-f`(currently not implemented) to batch replace blocks. If none of the three is indicated, this part will be skipped.
+
+## Forbit edits
+
+Official Mac client has known issues to scramble lines or styles of transformed code blocks. *I promise my code is always tested before pushed!* If you encountered the same problem, just use `-k` to lock down the note and prevent Evernote entering edit mode.
+
+This utility can be used solely for note locking as well ;-)
+
+# Commandline Reference
 ```
 usage: run.py [-h] [-t] [-c] [-f] [-k] [-u] [-r]
 
