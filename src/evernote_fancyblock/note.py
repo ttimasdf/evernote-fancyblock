@@ -107,7 +107,7 @@ def backup_tag(new, orig_str, soup):
 
     try:
         payload = json.loads(bk_sec['title'])
-    except (KeyError, json.JSONDecodeError) as e:
+    except (KeyError, json.JSONDecodeError):
         payload = {}
 
     if payload.get('orig') is None:
@@ -123,9 +123,9 @@ def restore_tag(tag, soup):
     bk_sec = tag.find(BACKUP_TAG)
     try:
         payload = json.loads(bk_sec['title'])
-    except (TypeError, KeyError, json.JSONDecodeError) as e:
-        print("Backup not found", e)
+    except (TypeError, KeyError, json.JSONDecodeError):
         return
     new = make_tag(payload['orig'])
     tag.replace_with(new)
+    tag.decompose()
     return new

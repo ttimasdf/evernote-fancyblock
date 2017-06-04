@@ -19,7 +19,7 @@ Use `-t` `-c` or `-f`(currently not implemented) to batch replace blocks. If non
 
 ## Forbit edits
 
-Official Mac client has known issues to scramble lines or styles of transformed code blocks. *I promise my code is always tested before pushed!* If you encountered the same problem, just use `-k` to lock down the note and prevent Evernote entering edit mode.
+Official Mac client has known issues to scramble lines or styles of transformed code blocks. *I promise my code is always tested before pushed!* Meanwhile, Evernote API enforced a DTD check upon third party editing, that is, for a valid ENML markup, the disrupted format is definitely *caused by Evernote client*. If you encountered the same problem, just use `-k` to lock down the note and prevent Evernote entering edit mode, and open an issue if you are willing to solve it, thanks!
 
 This utility can be used solely for note locking as well ;-)
 
