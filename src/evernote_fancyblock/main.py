@@ -50,4 +50,4 @@ def main():
 
         n.content = str(soup)
         n.updated = int(time() * 1000)
-        store.createNote(n)
+        store.updateNote(n)
