@@ -1,11 +1,18 @@
 from bs4 import BeautifulSoup
 from . import utils
 from evernote.api.client import NoteStore
-import evernote.edam.type.ttypes as Types
 import json
 
 
-STYLE_CLASSIC_BLOCK = 'box-sizing: border-box; padding: 8px; font-family: Monaco, Menlo, Consolas, "Courier New", monospace; font-size: 12px; color: rgb(51, 51, 51); border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-right-radius: 4px; border-bottom-left-radius: 4px; background-color: rgb(251, 250, 248); border: 1px solid rgba(0, 0, 0, 0.14902); background-position: initial initial; background-repeat: initial initial;-en-codeblock:true;'
+STYLE_CLASSIC_BLOCK = 'box-sizing: border-box; padding: 8px; ' \
+    'font-family: Monaco, Menlo, Consolas, "Courier New", monospace; ' \
+    'font-size: 12px; color: rgb(51, 51, 51); ' \
+    'border-top-left-radius: 4px; border-top-right-radius: 4px; ' \
+    'border-bottom-right-radius: 4px; border-bottom-left-radius: 4px; ' \
+    'background-color: rgb(251, 250, 248); ' \
+    'border: 1px solid rgba(0, 0, 0, 0.14902); ' \
+    'background-position: initial initial; ' \
+    'background-repeat: initial initial;-en-codeblock:true;'
 BACKUP_TAG = 'strike'
 
 
@@ -64,7 +71,8 @@ def xml_validate(soup):
     from lxml import etree
 
     text = str(soup).encode()
-    if input("Validation may take a while downloading DTD file, continue? [y/N]") in 'Nn':
+    if input("Validation may take a while downloading "
+             "DTD file, continue? [y/N]") in 'Nn':
         return True
     with urlopen('http://xml.evernote.com/pub/enml2.dtd') as u:
         dtd = etree.DTD(u)
