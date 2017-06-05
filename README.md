@@ -3,7 +3,15 @@ Prettify codeblocks in Evernote notes, especially pages from web clipper.
 
 # Usage
 ## Get Developer Token
-Simply run `./run.py`. For the first time, it will prompt you of your developer token. simply enter it and it'll be encrypted and stored in `config.ini` locally. If you want to use this program in production (Use a real account other than a faked one in sandbox.evernote.com), add a config named `service_host` in the ini file as following:
+
+Simply run `./run.py`. For the first time, it will prompt you of your developer token.
+
+To get your token from different services:
+- [www.evernote.com](https://www.evernote.com/api/DeveloperToken.action)
+- [app.yinxiang.com](https://app.yinxiang.com/api/DeveloperToken.action)
+- [sandbox.evernote.com](https://sandbox.evernote.com/api/DeveloperToken.action)
+
+Simply enter the token when it asked and it'll be encrypted and stored in `config.ini` locally. If you want to use this program in production (Use a real account other than a faked one in sandbox.evernote.com), add a config named `service_host` in the ini file as following:
 ```
 [secret]
 token = [encrypted token]
