@@ -103,6 +103,7 @@ def backup_tag(new, orig_str, soup):
     bk_sec = new.find(BACKUP_TAG)
     if bk_sec is None:
         bk_sec = soup.new_tag(BACKUP_TAG)
+        bk_sec.string = ''
         new.insert(0, bk_sec)
 
     try:
