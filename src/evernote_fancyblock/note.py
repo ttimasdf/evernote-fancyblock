@@ -17,7 +17,8 @@ BACKUP_TAG = 'strike'
 
 
 def codeblock_detect(soup):
-    tag_blocks = soup("pre")
+    tag_blocks = soup("pre", style=lambda s: not isinstance(
+        s, str) or "-en-codeblock" not in s and "-en-fancyblock" not in s)
     classic_blocks = soup(["div", "pre"], style=lambda s: isinstance(
         s, str) and "-en-codeblock" in s)
     fancy_blocks = soup("div", style=lambda s: isinstance(
