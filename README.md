@@ -1,6 +1,8 @@
 # evernote-fancyblock
 Prettify codeblocks in Evernote notes, especially pages from web clipper.
 
+*EDIT: This script does NOT work anymore for evernote [disabled developer token for security concerns](https://discussion.evernote.com/topic/108911-developer-token-are-not-supported-anymore/).*
+
 # Usage
 ## Get Developer Token
 
